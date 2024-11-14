@@ -1,0 +1,17 @@
+{
+  "name": "watchify-server",
+  "version": "1.0.0",
+  "description": "プッシュ通知用",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bvlion/WatchifyServer.git"
+  },
+  "author": "岩井 大志",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "firebase-admin": "^12.0.0",
+    "log4js": "^6.9.1"
+  }
+}

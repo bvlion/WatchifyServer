@@ -5,7 +5,7 @@ require('dotenv').config()
 admin.initializeApp({
   credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_CREDENTIAL_JSON)),
   databaseURL: process.env.FIREBASE_DATABASE_URL
-});
+})
 const db = admin.database()
 
 db.ref('/notifier').on('child_changed', async (changedSnapshot) => {
@@ -24,10 +24,10 @@ db.ref('/notifier').on('child_changed', async (changedSnapshot) => {
 
   admin.messaging().send(message)
     .then((response) => {
-      logger.exec.info('Successfully sent message:', response);
+      logger.exec.info('Successfully sent message:', response)
     })
     .catch((error) => {
-      logger.exec.warn('Error sending message:', error);
+      logger.exec.warn('Error sending message:', error)
     })
 })
 
@@ -45,9 +45,9 @@ db.ref('/stop').on('child_changed', async (changedSnapshot) => {
   }
   admin.messaging().send(message)
     .then((response) => {
-      logger.exec.info('Successfully sent message:', response);
+      logger.exec.info('Successfully sent message:', response)
     })
     .catch((error) => {
-      logger.exec.warn('Error sending message:', error);
+      logger.exec.warn('Error sending message:', error)
     })
 })

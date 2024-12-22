@@ -1,5 +1,6 @@
 const admin = require('firebase-admin')
 const logger = require('./logger')
+const cron = require('node-cron')
 require('dotenv').config()
 
 admin.initializeApp({
@@ -50,4 +51,35 @@ db.ref('/stop').on('child_changed', async (changedSnapshot) => {
     .catch((error) => {
       logger.exec.warn('Error sending message:', error)
     })
+})
+
+cron.schedule('0 6 * * *', async () => {
+  const json = (await db.ref('fcmToken').once('value')).val()
+  Object.entries(json).forEach(([key, value]) => {
+    const data = {
+      message: 'test'
+    }
+    const message = {
+      data: data,
+      token: value
+    }
+    admin.messaging().send(message)
+      .then((response) => {
+        logger.exec.info('Successfully sent message:', response)
+      })
+      .catch((error) => {
+        if (error.code === "messaging/invalid-registration-token" ||
+            error.code === "messaging/registration-token-not-registered") {
+          ['fcmToken', 'notifier', 'stop'].forEach(reference => {
+            db.ref(reference).child(key).remove()
+              .then(() => {
+                logger.exec.info('remove invalid token: ', value)
+              })
+              .catch((err) => {
+                logger.exec.warn('remove invalid token error: ' + value, err)
+              })
+          })
+        }
+      })
+  })
 })
